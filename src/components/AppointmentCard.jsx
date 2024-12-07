@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const AppointmentCard = ({ appointment, onEdit, onDelete }) => {
@@ -16,7 +16,7 @@ const AppointmentCard = ({ appointment, onEdit, onDelete }) => {
     onDelete(appointment.id);
   };
   return (
-    <div className="card p-4">
+    <div className="p-4 bg-softWhite shadow-md rounded-lg mb-4 border border-lightGray">
       <h3 className="font-bold text-darkGray">
         {appointment.appointment_date}
       </h3>
@@ -33,9 +33,9 @@ const AppointmentCard = ({ appointment, onEdit, onDelete }) => {
 
         <button
           onClick={() => setShowDeleteConfirm(true)}
-          className="text-warmAmber hover:text=[#D881F] transition"
+          className="text-warmAmber hover:text=[#D88B1F] transition"
         >
-          <FaEdit>Delete</FaEdit>
+          <FaTrash>Delete</FaTrash>
         </button>
       </div>
       {showDeleteConfirm && (
