@@ -14,7 +14,7 @@ const Medicines = () => {
 
   //for testing
   const accessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMmVlNWYyOC0zMDNiLTRkYjUtOWFjNS0xNTFhNTNlMzJmZmIiLCJlbWFpbCI6ImJlbmphbWluQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlhdCI6MTczMzYzODM3NSwiZXhwIjoxNzMzNjkyMzc1LCJqdGkiOiJiNzNmMjIxMC05YzliLTQzYmEtOTBlZi0zMzc1YjM0NDYwOGUifQ.EG_y1xS_vE_xeSEv3y2gXrGC64yUIuPTQeyJj3mOC18";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMmVlNWYyOC0zMDNiLTRkYjUtOWFjNS0xNTFhNTNlMzJmZmIiLCJlbWFpbCI6ImJlbmphbWluQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlhdCI6MTczMzY4NTg2OCwiZXhwIjoxNzMzNzM5ODY4LCJqdGkiOiJhNGE2ZTE0OC1iNWRmLTQyOGEtOWI4YS1kMTYyYmMxNDU4ZGIifQ.5jbpuFWHF8K83m-GKaNK3FF462tR8Zx18U6SgiaGMx0";
 
   const getMedicine = async () => {
     const res = await fetch(import.meta.env.VITE_SERVER + "/MATS/meds", {
@@ -132,6 +132,8 @@ const Medicines = () => {
       },
       body: JSON.stringify({
         medicine_id: medicineId,
+
+        // i have to include a way for admin to delete. but admin must have additional field to input the user_id. work on it tmr
         // user_id: userId,
       }),
     });
@@ -227,7 +229,6 @@ const Medicines = () => {
                   medicine={medicine}
                   quantity={quantity}
                   dosage={dosage}
-                  // onDelete={handleDelete} // Pass the delete function as a prop
                   onDelete={() => deleteMedicine(medicine.medicine_id)} // Pass the delete function as a prop
                 />
               );

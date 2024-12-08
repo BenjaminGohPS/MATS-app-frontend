@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import UpdateModal from "./MedicinesUpdateModal";
 
 const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const handleDelete = () => {
     setShowDeleteConfirm(false);
@@ -22,9 +24,8 @@ const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
       <p className="text-darkGray">Expiry: {medicine.medicine_expiry}</p>
       <div className="flex justify-between mt-2">
         <button
-          //   onClick={() => onEdit(medicine.id)}
-          onClick={() => console.log("Edit functionality goes here")}
-          //   className="text-softBlue hover:text-[#4D8BD9] transition"
+          onClick={() => setShowUpdateModal(true)}
+          //   onClick={() => console.log("Edit functionality goes here")}
           className="btn-edit"
         >
           <FaEdit>Edit</FaEdit>
@@ -58,6 +59,15 @@ const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {showUpdateModal && (
+        <UpdateModal
+          medicine={medicine}
+          quantity={quantity}
+          dosage={dosage}
+          onClose={() => setShowUpdateModal(false)}
+        />
       )}
     </div>
   );
