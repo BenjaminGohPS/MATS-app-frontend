@@ -9,6 +9,8 @@ import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
 import Medicines from "./pages/Medicines";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const queryClient = new QueryClient();
 // src/App.jsx
@@ -18,13 +20,7 @@ const App = () => {
     <div>
       <QueryClientProvider client={queryClient}>
         <div>
-          <div className="bg-blue-500 p-4">
-            This is a blue div with padding.
-          </div>
-          <TestTailwind />
-        </div>
-
-        <div>
+          <ToastContainer />
           <Routes>
             {/* at start */}
             <Route path="/" element={<LoginPage />} />
@@ -41,3 +37,12 @@ const App = () => {
 };
 
 export default App;
+
+/* WORKINGS
+ <div>
+          <div className="bg-blue-500 p-4">
+            This is a blue div with padding.
+          </div>
+          <TestTailwind />
+        </div> 
+*/
