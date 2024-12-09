@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import MedicineCard from "../components/MedicineCard";
+import { useNavigate } from "react-router-dom";
 
 const Medicines = () => {
   const queryClient = useQueryClient();
@@ -11,10 +12,15 @@ const Medicines = () => {
   const dosageRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
+  const accessToken = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
 
-  //for testing
-  const accessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMmVlNWYyOC0zMDNiLTRkYjUtOWFjNS0xNTFhNTNlMzJmZmIiLCJlbWFpbCI6ImJlbmphbWluQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlhdCI6MTczMzY4NTg2OCwiZXhwIjoxNzMzNzM5ODY4LCJqdGkiOiJhNGE2ZTE0OC1iNWRmLTQyOGEtOWI4YS1kMTYyYmMxNDU4ZGIifQ.5jbpuFWHF8K83m-GKaNK3FF462tR8Zx18U6SgiaGMx0";
+  useEffect(() => {
+    if (!accessToken) {
+      toast.error("You need to be logged in to view this page.");
+      navigate("/login");
+    }
+  }, [accessToken, navigate]);
 
   const getMedicine = async () => {
     const res = await fetch(import.meta.env.VITE_SERVER + "/MATS/meds", {
@@ -138,9 +144,9 @@ const Medicines = () => {
 
     if (!res.ok) {
       const error = await res.json();
-      toast.error(error.msg || "Failed to delete medicine");
+      toast.error(error.message || "Failed to delete medicine");
     } else {
-    //   const data = await res.json();
+      //   const data = await res.json();
       //   toast.success(data.msg || "Medicine deleted successfully");
       queryClient.invalidateQueries(["medicines"]);
     }
@@ -199,8 +205,6 @@ const Medicines = () => {
             onClick={() => {
               mutationAddMedicine.mutate();
             }}
-            // className="text-softBlue hover:text-[#4D8BD9] transition"
-            // test className="bg-softBlue hover:text-[#4D8BD9] transition rounded"
             className="btn-edit"
           >
             Add Medicine

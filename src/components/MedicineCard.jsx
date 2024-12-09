@@ -6,6 +6,7 @@ import UpdateModal from "./MedicinesUpdateModal";
 const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   const handleDelete = () => {
     setShowDeleteConfirm(false);
     toast.success("Medicine deleted!", {
@@ -23,17 +24,12 @@ const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
       <p className="text-darkGray">Dosage: {dosage}</p>
       <p className="text-darkGray">Expiry: {medicine.medicine_expiry}</p>
       <div className="flex justify-between mt-2">
-        <button
-          onClick={() => setShowUpdateModal(true)}
-          //   onClick={() => console.log("Edit functionality goes here")}
-          className="btn-edit"
-        >
+        <button onClick={() => setShowUpdateModal(true)} className="btn-edit">
           <FaEdit>Edit</FaEdit>
         </button>
 
         <button
           onClick={() => setShowDeleteConfirm(true)}
-          //   className="text-warmAmber hover:text=[#D88B1F] transition"
           className="btn-delete"
         >
           <FaTrash>Delete</FaTrash>
@@ -43,16 +39,11 @@ const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
         <div className="mt-2">
           <p className="text-darkGray bg-softLavender">Delete this medicine?</p>
           <div className="flex justify-between">
-            <button
-              onClick={handleDelete}
-              //   className="bg-warmAmber text-darkGray px-4 py-2 rounded hover:bg-[#D88B1F]"
-              className="btn-confirm"
-            >
+            <button onClick={handleDelete} className="btn-confirm">
               Yes
             </button>
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              //   className="bg-lightGray text-darkGray px-4 py-2 rounded hover:bg-[#C1C6CB]"
               className="btn-cancel"
             >
               Cancel

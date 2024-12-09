@@ -6,6 +6,7 @@ import UpdateModal from "./AppointmentUpdateModal";
 const AppointmentCard = ({ appointment, onDelete }) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const userRole = localStorage.getItem("userRole");
 
   const handleDelete = () => {
     setShowDeleteConfirm(false);
@@ -27,6 +28,11 @@ const AppointmentCard = ({ appointment, onDelete }) => {
       </p>
       <p className="text-darkGray">Location: {appointment.location}</p>
       <p className="text-darkGray">Type: {appointment.type}</p>
+
+      {userRole === "1" && (
+        <p className="text-darkGray">User ID: {appointment.user_id}</p>
+        // <p className="text-darkGray">User email: {appointment.user[0]}</p>
+      )}
       <div className="flex justify-between mt-2">
         <button onClick={() => setShowUpdateModal(true)} className="btn-edit">
           <FaEdit>Edit</FaEdit>
@@ -55,7 +61,6 @@ const AppointmentCard = ({ appointment, onDelete }) => {
           </div>
         </div>
       )}
-
       {showUpdateModal && (
         <UpdateModal
           appointment={appointment}

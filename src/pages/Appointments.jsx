@@ -1,8 +1,10 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import AppointmentCard from "../components/AppointmentCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
+// const Appointments = ({userRole, accessToken})
 const Appointments = () => {
   const queryClient = useQueryClient();
   const appointmentDateRef = useRef();
@@ -10,10 +12,21 @@ const Appointments = () => {
   const locationRef = useRef();
   const typeRef = useRef();
   const doctorRef = useRef();
+  const userIdRef = useRef();
+  const navigate = useNavigate();
 
-  //for testing
-  const accessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMmVlNWYyOC0zMDNiLTRkYjUtOWFjNS0xNTFhNTNlMzJmZmIiLCJlbWFpbCI6ImJlbmphbWluQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlhdCI6MTczMzY4NTg2OCwiZXhwIjoxNzMzNzM5ODY4LCJqdGkiOiJhNGE2ZTE0OC1iNWRmLTQyOGEtOWI4YS1kMTYyYmMxNDU4ZGIifQ.5jbpuFWHF8K83m-GKaNK3FF462tR8Zx18U6SgiaGMx0";
+  const accessToken = localStorage.getItem("accessToken");
+  const userRole = localStorage.getItem("userRole");
+
+  // checking roles
+  console.log(userRole);
+
+  useEffect(() => {
+    if (!accessToken) {
+      toast.error("You need to be logged in to view this page.");
+      navigate("/login");
+    }
+  }, [accessToken, navigate]);
 
   const getAppointments = async () => {
     const res = await fetch(import.meta.env.VITE_SERVER + "/MATS/appts", {
@@ -44,10 +57,8 @@ const Appointments = () => {
       !appointmentTimeRef.current.value ||
       !locationRef.current.value ||
       !typeRef.current.value ||
-      !doctorRef.current.value
-
-      // reserve for admin
-      // !endDateRef.current.value
+      !doctorRef.current.value ||
+      (userRole === "1" && !userIdRef.current.value) // reserve for admin
     ) {
       return;
     }
@@ -64,11 +75,13 @@ const Appointments = () => {
         location: locationRef.current.value,
         type: typeRef.current.value,
         doctor: doctorRef.current.value,
+        user_id: userRole === "1" ? userIdRef.current.value : undefined,
       }),
     });
 
     if (!res.ok) {
-      throw new Error("Error adding appointment");
+      const error = await res.json();
+      throw new Error(error.message || "Error adding appointment");
     }
 
     const data = await res.json();
@@ -80,11 +93,19 @@ const Appointments = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries(["appointments"]);
       toast.success(data.msg || "Appointment added successfully");
-      appointmentDateRef.current.value = "";
-      appointmentTimeRef.current.value = "";
-      locationRef.current.value = "";
-      typeRef.current.value = "";
-      doctorRef.current.value = "";
+      //   appointmentDateRef.current.value = "";
+      //   appointmentTimeRef.current.value = "";
+      //   locationRef.current.value = "";
+      //   typeRef.current.value = "";
+      //   doctorRef.current.value = "";
+      //   userIdRef.current.value = "";
+
+      if (appointmentDateRef.current) appointmentDateRef.current.value = "";
+      if (appointmentTimeRef.current) appointmentTimeRef.current.value = "";
+      if (locationRef.current) locationRef.current.value = "";
+      if (typeRef.current) typeRef.current.value = "";
+      if (doctorRef.current) doctorRef.current.value = "";
+      if (userIdRef.current) userIdRef.current.value = "";
     },
     onError: (error) => {
       toast.error(
@@ -104,7 +125,8 @@ const Appointments = () => {
       },
       body: JSON.stringify({
         id: appointmentId,
-
+        user_id: userRole === "1" ? userIdRef.current.value : undefined,
+        // no need, because I can see all appointments as admin
         // same as medicine, need to have extra field here to delete for user.
         // user_id: userId,
       }),
@@ -161,13 +183,19 @@ const Appointments = () => {
             placeholder="Doctor"
             className="border border-lightGray p-2 rounded w-full"
           />
-          {/* leave for admin
-          <input
-            type="text"
-            ref={endDateRef}
-            placeholder="End Date"
-            className="border border-lightGray p-2 rounded w-full"
-          /> */}
+
+          {userRole === "1" && (
+            <div>
+              <label>Assign User ID</label>
+              <input
+                type="text"
+                ref={userIdRef}
+                placeholder="User ID"
+                className="border border-lightGray p-2 rounded w-full"
+              />
+            </div>
+          )}
+
           <button
             onClick={() => {
               mutationAddAppointment.mutate();

@@ -15,10 +15,7 @@ const OverLay = (props) => {
   const medicineId = props.medicine.medicine_id;
   const startDate = props.medicine.medicines_users[0].start_date;
   const endDate = props.medicine.medicines_users[0].end_date;
-
-  //for testing
-  const accessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMmVlNWYyOC0zMDNiLTRkYjUtOWFjNS0xNTFhNTNlMzJmZmIiLCJlbWFpbCI6ImJlbmphbWluQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlhdCI6MTczMzY4NTg2OCwiZXhwIjoxNzMzNzM5ODY4LCJqdGkiOiJhNGE2ZTE0OC1iNWRmLTQyOGEtOWI4YS1kMTYyYmMxNDU4ZGIifQ.5jbpuFWHF8K83m-GKaNK3FF462tR8Zx18U6SgiaGMx0";
+  const accessToken = localStorage.getItem("accessToken");
 
   const updateMedicines = async () => {
     const res = await fetch(

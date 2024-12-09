@@ -4,8 +4,10 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TestTailwind from "./components/TestTailwind";
-import { Route, Routes } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
+import { Navigate, Route, Routes } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import RegisterPage from "./components/RegisterPage";
+import LoginPage from "./components/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
 import Medicines from "./pages/Medicines";
@@ -17,15 +19,24 @@ const queryClient = new QueryClient();
 // src/App.jsx
 
 const App = () => {
+  const accessToken = localStorage.getItem("accessToken");
+
+  // if (!accessToken) {
+  //   return <Navigate to="/login" replace />;
+  // }
+
   return (
     <div>
       <QueryClientProvider client={queryClient}>
         <div>
           <ToastContainer />
+
           <NavBar />
           <Routes>
             {/* at start */}
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
             {/* after login */}
             <Route path="/dashboard" element={<Dashboard />} />
