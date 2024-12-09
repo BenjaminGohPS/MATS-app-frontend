@@ -6,23 +6,20 @@ import { toast } from "react-toastify";
 
 const OverLay = (props) => {
   const queryClient = useQueryClient();
-  const medicineNameRef = useRef();
-  const medicineExpiryRef = useRef();
-  const quantityRef = useRef();
-  const dosageRef = useRef();
-  const startDateRef = useRef();
-  const endDateRef = useRef();
-  const medicineId = props.medicine.medicine_id;
-  const startDate = props.medicine.medicines_users[0].start_date;
-  const endDate = props.medicine.medicines_users[0].end_date;
+  const appointmentDateRef = useRef();
+  const appointmentTimeRef = useRef();
+  const locationRef = useRef();
+  const typeRef = useRef();
+  const doctorRef = useRef();
+  const appointmentId = props.appointment.appointment_id;
 
   //for testing
   const accessToken =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMmVlNWYyOC0zMDNiLTRkYjUtOWFjNS0xNTFhNTNlMzJmZmIiLCJlbWFpbCI6ImJlbmphbWluQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlhdCI6MTczMzY4NTg2OCwiZXhwIjoxNzMzNzM5ODY4LCJqdGkiOiJhNGE2ZTE0OC1iNWRmLTQyOGEtOWI4YS1kMTYyYmMxNDU4ZGIifQ.5jbpuFWHF8K83m-GKaNK3FF462tR8Zx18U6SgiaGMx0";
 
-  const updateMedicines = async () => {
+  const updateAppointments = async () => {
     const res = await fetch(
-      import.meta.env.VITE_SERVER + "/MATS/meds/" + medicineId,
+      import.meta.env.VITE_SERVER + "/MATS/appts/" + appointmentId,
       {
         method: "PATCH",
         headers: {
@@ -30,29 +27,29 @@ const OverLay = (props) => {
           authorization: "Bearer " + accessToken,
         },
         body: JSON.stringify({
-          medicine_name: medicineNameRef.current.value,
-          medicine_expiry: medicineExpiryRef.current.value,
-          quantity: quantityRef.current.value,
-          daily_dosage: dosageRef.current.value,
-          start_date: startDateRef.current.value,
-          end_date: endDateRef.current.value,
+          appointment_date: appointmentDateRef.current.value,
+          appointment_time: appointmentTimeRef.current.value,
+          location: locationRef.current.value,
+          type: typeRef.current.value,
+          doctor: doctorRef.current.value,
         }),
       }
     );
+
     if (!res.ok) {
-      throw new Error("error updating medicine");
+      throw new Error("error updating appointment");
     }
   };
 
   const { mutate } = useMutation({
-    mutationFn: updateMedicines,
+    mutationFn: updateAppointments,
     onSuccess: () => {
-      queryClient.invalidateQueries(["medicines"]);
-      toast.success("Medicine updated successfully!");
+      queryClient.invalidateQueries(["appointments"]);
+      toast.success("Appointment updated successfully");
       props.onClose();
     },
     onError: () => {
-      toast.error("Error updating medicine.");
+      toast.error("Error updating appointments.");
     },
   });
 
@@ -60,50 +57,52 @@ const OverLay = (props) => {
     <div className="modal-overlay">
       <div className="modal-container">
         <h2 className="text-lg font-semibold text-darkGray mb-2">
-          Edit Medicine
+          Edit Appointment
         </h2>
-        <label>Name: </label>
+        <label>Appointment Date: </label>
         <input
-          ref={medicineNameRef}
+          ref={appointmentDateRef}
           type="text"
-          defaultValue={props.medicine.medicine_name}
+          defaultValue={props.appointment.appointment_date}
           className="input-field"
         />
-        <label>Expiry: </label>
+        <label>Appointment Time: </label>
         <input
-          ref={medicineExpiryRef}
+          ref={appointmentTimeRef}
           type="text"
-          defaultValue={props.medicine.medicine_expiry}
+          defaultValue={props.appointment.appointment_time}
           className="input-field"
         />
-        <label>Quantity: </label>
+        <label>Location: </label>
         <input
-          ref={quantityRef}
+          ref={locationRef}
           type="text"
-          defaultValue={props.quantity}
+          defaultValue={props.appointment.location}
           className="input-field"
         />
-        <label>Daily Dosage: </label>
+        <label>Type: </label>
         <input
-          ref={dosageRef}
+          ref={typeRef}
           type="text"
-          defaultValue={props.dosage}
+          defaultValue={props.appointment.type}
           className="input-field"
         />
-        <label>Start Date: </label>
+        <label>Doctor: </label>
         <input
-          ref={startDateRef}
+          ref={doctorRef}
           type="text"
-          defaultValue={startDate}
+          defaultValue={props.appointment.doctor}
           className="input-field"
         />
+
+        {/* reserve for ADMIN
         <label>End Date: </label>
         <input
           ref={endDateRef}
           type="text"
           defaultValue={endDate}
           className="input-field"
-        />
+        /> */}
 
         <div className="modal-footer">
           <button
@@ -123,20 +122,15 @@ const OverLay = (props) => {
   );
 };
 
-const MedicinesUpdateModal = (props) => {
+const AppointmentUpdateModal = (props) => {
   return (
     <>
       {ReactDOM.createPortal(
-        <OverLay
-          medicine={props.medicine}
-          quantity={props.quantity}
-          dosage={props.dosage}
-          onClose={props.onClose}
-        />,
+        <OverLay appointment={props.appointment} onClose={props.onClose} />,
         document.querySelector("#modal-root")
       )}
     </>
   );
 };
 
-export default MedicinesUpdateModal;
+export default AppointmentUpdateModal;

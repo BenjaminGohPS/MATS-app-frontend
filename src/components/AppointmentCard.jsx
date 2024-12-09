@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import UpdateModal from "./AppointmentUpdateModal";
 
-const AppointmentCard = ({ appointment, onEdit, onDelete }) => {
+const AppointmentCard = ({ appointment, onDelete }) => {
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleDelete = () => {
@@ -13,27 +15,26 @@ const AppointmentCard = ({ appointment, onEdit, onDelete }) => {
         color: "#2C2C2C",
       },
     });
-    onDelete(appointment.id);
+    onDelete(appointment.appointment_id);
   };
   return (
     <div className="p-4 bg-softWhite shadow-md rounded-lg mb-4 border border-lightGray">
       <h3 className="font-bold text-darkGray">
         {appointment.appointment_date}
       </h3>
-      <p className="text-darkGray">{appointment.appointment_time}</p>
-      <p className="text-darkGray">{appointment.location}</p>
-      <p className="text-darkGray">{appointment.type}</p>
+      <p className="text-darkGray">
+        Appointment Time: {appointment.appointment_time}
+      </p>
+      <p className="text-darkGray">Location: {appointment.location}</p>
+      <p className="text-darkGray">Type: {appointment.type}</p>
       <div className="flex justify-between mt-2">
-        <button
-          onClick={() => onEdit(appointment.id)}
-          className="text-softBlue hover:text-[#4D8BD9] transition"
-        >
+        <button onClick={() => setShowUpdateModal(true)} className="btn-edit">
           <FaEdit>Edit</FaEdit>
         </button>
 
         <button
           onClick={() => setShowDeleteConfirm(true)}
-          className="text-warmAmber hover:text=[#D88B1F] transition"
+          className="btn-delete"
         >
           <FaTrash>Delete</FaTrash>
         </button>
@@ -41,21 +42,25 @@ const AppointmentCard = ({ appointment, onEdit, onDelete }) => {
       {showDeleteConfirm && (
         <div className="mt-2">
           <p className="text-darkGray">Delete this appointment?</p>
-          <div classNam="flex justify-between">
-            <button
-              onClick={handleDelete}
-              className="bg-warmAmber text-darkGray px-4 py-2 rounded hover:bg-[#D88B1F]"
-            >
+          <div className="flex justify-between">
+            <button onClick={handleDelete} className="btn-confirm">
               Yes
             </button>
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              className="bg-lightGray text-darkGray px-4 py-2 rounded hover:bg-[#C1C6CB]"
+              className="btn-cancel"
             >
               Cancel
             </button>
           </div>
         </div>
+      )}
+
+      {showUpdateModal && (
+        <UpdateModal
+          appointment={appointment}
+          onClose={() => setShowUpdateModal(false)}
+        />
       )}
     </div>
   );

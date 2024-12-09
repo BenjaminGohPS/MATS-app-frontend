@@ -107,6 +107,45 @@
   border-color: #4d8bd9;
 }
 
+/* Navbar - WIP */
+
+.navbar {
+  height: 5rem;
+  background-color: #c83e4d;
+}
+
+.navbar nav {
+  height: 100%;
+}
+
+.navbar ul {
+  height: 100%;
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar li {
+  margin: 0 1rem;
+  width: 10rem;
+}
+
+.navbar a {
+  color: whitesmoke;
+  text-decoration: none;
+}
+
+.navbar a:hover,
+.navbar a:active,
+.navbar a.active {
+  color: whitesmoke;
+  padding-bottom: 0.25rem;
+  border-bottom: 4px solid whitesmoke;
+}
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;

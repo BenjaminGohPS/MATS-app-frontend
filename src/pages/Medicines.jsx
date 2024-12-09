@@ -33,7 +33,6 @@ const Medicines = () => {
     return data;
   };
 
-  //const queryMedicine = useQuery({
   const queryMedicine = useQuery({
     queryKey: ["medicines"],
     queryFn: getMedicine,
@@ -102,7 +101,6 @@ const Medicines = () => {
     return data;
   };
 
-  //  const mutationAddMedicine = useMutation({
   const mutationAddMedicine = useMutation({
     mutationFn: addMedicine,
     onSuccess: (data) => {
@@ -142,7 +140,7 @@ const Medicines = () => {
       const error = await res.json();
       toast.error(error.msg || "Failed to delete medicine");
     } else {
-      const data = await res.json();
+    //   const data = await res.json();
       //   toast.success(data.msg || "Medicine deleted successfully");
       queryClient.invalidateQueries(["medicines"]);
     }

@@ -11,6 +11,7 @@ import Appointments from "./pages/Appointments";
 import Medicines from "./pages/Medicines";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NavBar from "./components/NavBar";
 
 const queryClient = new QueryClient();
 // src/App.jsx
@@ -21,6 +22,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <div>
           <ToastContainer />
+          <NavBar />
           <Routes>
             {/* at start */}
             <Route path="/" element={<LoginPage />} />
