@@ -20,8 +20,8 @@ const Appointments = () => {
   const userId = localStorage.getItem("userId"); // not working yet
 
   // checking roles
-  console.log(userRole);
-  console.log(userId);
+//   console.log(userRole);
+//   console.log(userId);
 
   useEffect(() => {
     if (!accessToken) {
@@ -127,7 +127,7 @@ const Appointments = () => {
       },
       body: JSON.stringify({
         id: appointmentId,
-        user_id: userRole === "1" ? userIdRef.current.value : undefined,
+        // user_id: userRole === "1" ? userIdRef.current.value : undefined,
         // no need, because I can see all appointments as admin
         // same as medicine, need to have extra field here to delete for user.
         // user_id: userId,

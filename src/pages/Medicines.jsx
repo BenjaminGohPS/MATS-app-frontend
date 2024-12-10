@@ -12,8 +12,11 @@ const Medicines = () => {
   const dosageRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
-  const accessToken = localStorage.getItem("accessToken");
+  const userIdRef = useRef();
   const navigate = useNavigate();
+
+  const accessToken = localStorage.getItem("accessToken");
+  const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
     if (!accessToken) {
@@ -78,7 +81,8 @@ const Medicines = () => {
       !quantityRef.current.value ||
       !dosageRef.current.value ||
       !startDateRef.current.value ||
-      !endDateRef.current.value
+      !endDateRef.current.value ||
+      (userRole === "1" && !userIdRef.current.value)
     ) {
       return;
     }
@@ -96,6 +100,7 @@ const Medicines = () => {
         daily_dosage: dosageRef.current.value,
         start_date: startDateRef.current.value,
         end_date: endDateRef.current.value,
+        user_id: userRole === "1" ? userIdRef.current.value : undefined,
       }),
     });
 
@@ -112,12 +117,13 @@ const Medicines = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries(["medicines"]);
       toast.success(data.msg || "Medicine added successfully");
-      medicineNameRef.current.value = "";
-      medicineExpiryRef.current.value = "";
-      quantityRef.current.value = "";
-      dosageRef.current.value = "";
-      startDateRef.current.value = "";
-      endDateRef.current.value = "";
+      if (medicineNameRef.current) medicineNameRef.current.value = "";
+      if (medicineExpiryRef.current) medicineExpiryRef.current.value = "";
+      if (quantityRef.current) quantityRef.current.value = "";
+      if (dosageRef.current) dosageRef.current.value = "";
+      if (startDateRef.current) startDateRef.current.value = "";
+      if (startDateRef.current) endDateRef.current.value = "";
+      if (userIdRef.current) userIdRef.current.value = "";
     },
     onError: (error) => {
       toast.error(
@@ -136,7 +142,7 @@ const Medicines = () => {
       },
       body: JSON.stringify({
         medicine_id: medicineId,
-
+        // user_id: userRole === "1" ? userIdRef.current.value : undefined,
         // i have to include a way for admin to delete. but admin must have additional field to input the user_id. work on it tmr
         // user_id: userId,
       }),
@@ -201,6 +207,17 @@ const Medicines = () => {
             placeholder="End Date"
             className="border border-lightGray p-2 rounded w-full"
           />
+          {userRole === "1" && (
+            <div>
+              <label>Assign User ID</label>
+              <input
+                type="text"
+                ref={userIdRef}
+                placeholder="User ID"
+                className="border border-lightGray p-2 rounded w-full"
+              />
+            </div>
+          )}
           <button
             onClick={() => {
               mutationAddMedicine.mutate();

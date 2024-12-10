@@ -85,8 +85,7 @@ const Dashboard = () => {
         ) : (
           <div>
             {queryAppointments.data.map((appointment) => {
-              //   if (userRole === "2" && appointment.user_id !== userId)
-              //     return null; // Only show user's own appointments
+           
               return (
                 <AppointmentCard
                   key={appointment.appointment_id}

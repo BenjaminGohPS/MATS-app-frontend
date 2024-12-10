@@ -30,8 +30,10 @@ const AppointmentCard = ({ appointment, onDelete }) => {
       <p className="text-darkGray">Type: {appointment.type}</p>
 
       {userRole === "1" && (
-        <p className="text-darkGray">User ID: {appointment.user_id}</p>
-        // <p className="text-darkGray">User email: {appointment.user[0]}</p>
+        <>
+          <p className="text-darkGray">User ID: {appointment.user_id}</p>
+          <p className="text-darkGray">User Email: {appointment.user?.email}</p>
+        </>
       )}
       <div className="flex justify-between mt-2">
         <button onClick={() => setShowUpdateModal(true)} className="btn-edit">

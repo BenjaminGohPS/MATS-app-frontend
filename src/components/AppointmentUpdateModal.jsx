@@ -38,20 +38,22 @@ const OverLay = (props) => {
     );
 
     if (!res.ok) {
-      throw new Error("error updating appointment");
+      const error = await res.json();
+      throw new Error(error.message || "Error updating appointment");
     }
+
+    const data = await res.json();
+    return data;
   };
 
   const { mutate } = useMutation({
     mutationFn: updateAppointments,
     onSuccess: (data) => {
-      console.log("successful update");
       queryClient.invalidateQueries(["appointments"]);
       toast.success(data.msg || "Appointment updated successfully");
       return props.onClose();
     },
     onError: (error) => {
-      console.log("mutation error");
       toast.error(error.msg || "Error updating appointments.");
     },
   });

@@ -6,6 +6,7 @@ import UpdateModal from "./MedicinesUpdateModal";
 const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const userRole = localStorage.getItem("userRole");
 
   const handleDelete = () => {
     setShowDeleteConfirm(false);
@@ -23,6 +24,19 @@ const MedicineCard = ({ medicine, onDelete, quantity, dosage }) => {
       <p className="text-darkGray">Quantity: {quantity}</p>
       <p className="text-darkGray">Dosage: {dosage}</p>
       <p className="text-darkGray">Expiry: {medicine.medicine_expiry}</p>
+
+      {userRole === "1" && (
+        <>
+          <p className="text-darkGray">
+            User ID: {medicine.medicines_users?.[0]?.user_id}
+          </p>
+
+          <p className="text-darkGray">
+            User Email: {medicine.medicines_users?.[0]?.user?.email}
+          </p>
+        </>
+      )}
+
       <div className="flex justify-between mt-2">
         <button onClick={() => setShowUpdateModal(true)} className="btn-edit">
           <FaEdit>Edit</FaEdit>
