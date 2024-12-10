@@ -11,9 +11,11 @@ const OverLay = (props) => {
   const locationRef = useRef();
   const typeRef = useRef();
   const doctorRef = useRef();
+  const userIdRef = useRef();
+
   const appointmentId = props.appointment.appointment_id;
   const accessToken = localStorage.getItem("accessToken");
-  
+  const userRole = localStorage.getItem("userRole");
 
   const updateAppointments = async () => {
     const res = await fetch(
@@ -30,6 +32,7 @@ const OverLay = (props) => {
           location: locationRef.current.value,
           type: typeRef.current.value,
           doctor: doctorRef.current.value,
+          user_id: userRole === "1" ? userIdRef.current.value : undefined,
         }),
       }
     );
@@ -41,13 +44,15 @@ const OverLay = (props) => {
 
   const { mutate } = useMutation({
     mutationFn: updateAppointments,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("successful update");
       queryClient.invalidateQueries(["appointments"]);
-      toast.success("Appointment updated successfully");
-      props.onClose();
+      toast.success(data.msg || "Appointment updated successfully");
+      return props.onClose();
     },
-    onError: () => {
-      toast.error("Error updating appointments.");
+    onError: (error) => {
+      console.log("mutation error");
+      toast.error(error.msg || "Error updating appointments.");
     },
   });
 
@@ -93,15 +98,17 @@ const OverLay = (props) => {
           className="input-field"
         />
 
-        {/* reserve for ADMIN
-        <label>End Date: </label>
-        <input
-          ref={endDateRef}
-          type="text"
-          defaultValue={endDate}
-          className="input-field"
-        /> */}
-
+        {userRole === "1" && (
+          <div>
+            <label>Assign User ID</label>
+            <input
+              type="text"
+              ref={userIdRef}
+              defaultValue={props.appointment.user_id}
+              className="border border-lightGray p-2 rounded w-full"
+            />
+          </div>
+        )}
         <div className="modal-footer">
           <button
             onClick={() => {

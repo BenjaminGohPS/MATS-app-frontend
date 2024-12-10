@@ -17,9 +17,11 @@ const Appointments = () => {
 
   const accessToken = localStorage.getItem("accessToken");
   const userRole = localStorage.getItem("userRole");
+  const userId = localStorage.getItem("userId"); // not working yet
 
   // checking roles
   console.log(userRole);
+  console.log(userId);
 
   useEffect(() => {
     if (!accessToken) {
@@ -110,7 +112,7 @@ const Appointments = () => {
     onError: (error) => {
       toast.error(
         error.msg ||
-          "Failed to add appointment. Make sure all fields are entered (to edit)"
+          "Failed to add appointment. Make sure all fields are entered."
       );
     },
   });
