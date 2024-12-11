@@ -1,28 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo_transparent.png";
+import LogoutModal from "./LogoutModal";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("accessToken");
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prevState) => !prevState);
   };
 
-  const logout = () => {
+  const openLogoutModal = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const closeLogoutModal = () => {
+    setIsLogoutModalOpen(false);
+  };
+
+  const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userRole");
     localStorage.removeItem("userId");
-
-    navigate("/login");
+    navigate("/");
+    setIsLogoutModalOpen(false);
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50); // Change background after scrolling 50px
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="bg-blue-600 p-4 sticky top-0 z-50">
+   
+    <nav
+      className={`${
+        scrolled ? "bg-blue-900 text-white" : "bg-blue-600 text-white"
+      } p-4 sticky top-0 z-50 transition-all duration-300`}
+    >
       <div className="flex justify-between items-center">
         {/* Logo or Brand */}
-        <Link to="/" className="flex items-center">
+        <Link
+          to={accessToken ? "/dashboard" : "/"}
+          className="flex items-center"
+        >
           <img
             src={logo}
             alt="MATS Logo"
@@ -32,13 +62,13 @@ const NavBar = () => {
 
         {accessToken && (
           <div
-            className={`${isMenuOpen ? "block" : "hidden"} lg:flex space-x-4`}
+            className={`${isMenuOpen ? "block" : "hidden"} lg:flex space-x-0`}
           >
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
                 isActive
-                  ? "text-white bg-blue-800 py-2 px-4 rounded transition-all"
+                  ? "text-white bg-blue-500 py-2 px-4 rounded transition-all"
                   : "text-white hover:bg-blue-700 py-2 px-4 rounded transition-all"
               }
             >
@@ -48,7 +78,7 @@ const NavBar = () => {
               to="/appts"
               className={({ isActive }) =>
                 isActive
-                  ? "text-white bg-blue-800 py-2 px-4 rounded transition-all"
+                  ? "text-white bg-blue-500 py-2 px-4 rounded transition-all"
                   : "text-white hover:bg-blue-700 py-2 px-4 rounded transition-all"
               }
             >
@@ -58,7 +88,7 @@ const NavBar = () => {
               to="/meds"
               className={({ isActive }) =>
                 isActive
-                  ? "text-white bg-blue-800 py-2 px-4 rounded transition-all"
+                  ? "text-white bg-blue-500 py-2 px-4 rounded transition-all"
                   : "text-white hover:bg-blue-700 py-2 px-4 rounded transition-all"
               }
             >
@@ -68,23 +98,19 @@ const NavBar = () => {
               to="/profile"
               className={({ isActive }) =>
                 isActive
-                  ? "text-white bg-blue-800 py-2 px-4 rounded transition-all"
+                  ? "text-white bg-blue-500 py-2 px-4 rounded transition-all"
                   : "text-white hover:bg-blue-700 py-2 px-4 rounded transition-all"
               }
             >
               Profile
             </NavLink>
-            <NavLink
-              to="/"
-              onClick={logout}
-              className={({ isActive }) =>
-                isActive
-                  ? "bg-gray-700 text-white py-2 px-4 rounded transition-all"
-                  : "bg-gray-500 text-white hover:bg-gray-700 py-2 px-4 rounded transition-all"
-              }
+
+            <button
+              onClick={openLogoutModal}
+              className="bg-gray-500 text-white hover:bg-gray-700 py-2 px-4 rounded transition-all"
             >
               Logout
-            </NavLink>
+            </button>
           </div>
         )}
 
@@ -93,6 +119,12 @@ const NavBar = () => {
           ☰
         </button>
       </div>
+
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={closeLogoutModal}
+        onLogout={handleLogout}
+      />
     </nav>
   );
 };
