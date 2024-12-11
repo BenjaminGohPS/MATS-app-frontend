@@ -149,7 +149,33 @@ const Appointments = () => {
     }
   };
 
-  if (queryAppointments.isLoading) return <div>Loading appointments...</div>;
+  const sortAppointmentsByDate = (appointments) => {
+    return appointments.sort((a, b) => {
+      // Handle missing or incorrect date formats gracefully
+      const parseDate = (dateStr) => {
+        const dateParts = dateStr.split("-");
+        if (dateParts.length === 3) {
+          return new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`); // Convert to yyyy-mm-dd format
+        }
+        return new Date(0); // Return a default date in case of invalid format
+      };
+
+      const dateA = parseDate(a.appointment_date);
+      const dateB = parseDate(b.appointment_date);
+      return dateA - dateB; // Sorting from earliest to latest
+    });
+  };
+  const sortedAppointments = queryAppointments.isSuccess
+    ? sortAppointmentsByDate(queryAppointments.data)
+    : [];
+
+  if (queryAppointments.isLoading) {
+    return (
+      <div className="spinner-container">
+        <div className="spinner">Loading...</div>
+      </div>
+    );
+  }
   if (queryAppointments.isError)
     return <div>Error: {queryAppointments.error.message}</div>;
 
@@ -237,7 +263,7 @@ const Appointments = () => {
           <p>No appointment found.</p>
         ) : (
           <div>
-            {queryAppointments.data.map((appointment) => {
+            {sortedAppointments.map((appointment) => {
               return (
                 <AppointmentCard
                   key={appointment.appointment_id}

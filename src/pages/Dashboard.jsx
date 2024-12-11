@@ -9,7 +9,8 @@ const Dashboard = () => {
   const queryClient = useQueryClient();
   const accessToken = localStorage.getItem("accessToken");
   const userRole = localStorage.getItem("userRole");
-  const userId = localStorage.getItem("userId"); // Assuming user ID is stored in localStorage
+  const userId = localStorage.getItem("userId");
+  const userEmail = localStorage.getItem("userEmail");
 
   // If not logged in, redirect to login page
   useEffect(() => {
@@ -36,16 +37,6 @@ const Dashboard = () => {
     const data = await res.json();
     return data;
   };
-
-  //   const {
-  //     data: appointments,
-  //     isLoading,
-  //     isError,
-  //     error,
-  //   } = useQuery({
-  //     queryKey: ["appointments"],
-  //     queryFn: getAppointments,
-  //   });
 
   const queryAppointments = useQuery({
     queryKey: ["appointments"],
@@ -77,13 +68,39 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+  const sortAppointmentsByDate = (appointments) => {
+    return appointments.sort((a, b) => {
+      // Handle missing or incorrect date formats gracefully
+      const parseDate = (dateStr) => {
+        const dateParts = dateStr.split("-");
+        if (dateParts.length === 3) {
+          return new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`); // Convert to yyyy-mm-dd format
+        }
+        return new Date(0); // Return a default date in case of invalid format
+      };
 
-  //   if (isLoading) return <div>Loading...</div>;
-  //   if (isError) return <div>Error: {error.message}</div>;
+      const dateA = parseDate(a.appointment_date);
+      const dateB = parseDate(b.appointment_date);
+      return dateA - dateB; // Sorting from earliest to latest
+    });
+  };
+  const sortedAppointments = queryAppointments.isSuccess
+    ? sortAppointmentsByDate(queryAppointments.data)
+    : [];
+
+  if (queryAppointments.isLoading) {
+    return (
+      <div className="spinner-container">
+        <div className="spinner">Loading...</div>
+      </div>
+    );
+  }
+
+  if (queryAppointments.isError) {
+    return (
+      <div>Error fetching appointments: {queryAppointments.error.message}</div>
+    );
+  }
 
   return (
     <div className="p-4 bg-softWhite">
@@ -92,10 +109,12 @@ const Dashboard = () => {
       {/* Display user details */}
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-darkGray">
-          Welcome back, {userRole === "1" ? "Admin" : "User"}!
+          Welcome back, {userEmail.split("@")[0]}!
         </h3>
         <p className="text-darkGray">
           Role: {userRole === "1" ? "Admin" : "User"}
+          <br />
+          Email: {userEmail}
           <br />
           User ID: {userId}
         </p>
@@ -110,7 +129,7 @@ const Dashboard = () => {
           <p>No upcoming appointments.</p>
         ) : (
           <div>
-            {queryAppointments.data.map((appointment) => {
+            {sortedAppointments.map((appointment) => {
               return (
                 <AppointmentCard
                   key={appointment.appointment_id}
@@ -125,37 +144,30 @@ const Dashboard = () => {
 
       {/* Admin-specific features */}
       {userRole === "1" && (
-        <div className="mb-4">
+        <div className="mb-4 space-x-4">
           <h3 className="text-lg font-semibold text-darkGray">
             Admin Controls
           </h3>
-          <button className="btn-edit" onClick={() => navigate("/appts")}>
+          <button className="btn-edit " onClick={() => navigate("/appts")}>
             Manage All Appointments
+          </button>
+          <button className="btn-edit" onClick={() => navigate("/meds")}>
+            Manage All Medicines
+          </button>
+          <button className="btn-edit" onClick={() => navigate("/users")}>
+            Manage All Users
           </button>
         </div>
       )}
 
       {/* Logout Button */}
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <button onClick={handleLogout} className="btn-cancel">
           Logout
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
 
 export default Dashboard;
-
-// import React from 'react';
-// import Medicines from './Medicines';
-
-// const Dashboard = () => {
-//     return (
-//         <div>
-//             <Medicines />
-//         </div>
-//     );
-// };
-
-// export default Dashboard;

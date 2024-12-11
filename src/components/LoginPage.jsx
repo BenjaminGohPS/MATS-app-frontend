@@ -69,8 +69,12 @@ const LoginPage = () => {
       const userId = decodedToken.userId;
       localStorage.setItem("userId", userId);
 
+      const userEmail = decodedToken.email;
+      localStorage.setItem("userEmail", userEmail);
+
       console.log("role id:", userRole);
       console.log("user id:", userId);
+      console.log("userEmail:", userEmail);
       navigate(redirectTo, { replace: true });
     },
     onError: (error) => {

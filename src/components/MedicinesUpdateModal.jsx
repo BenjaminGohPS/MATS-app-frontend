@@ -12,7 +12,6 @@ const OverLay = (props) => {
   const dosageRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
-  const userIdRef = useRef();
   const medicineId = props.medicine.medicine_id;
   const startDate = props.medicine.medicines_users[0].start_date;
   const endDate = props.medicine.medicines_users[0].end_date;
@@ -21,17 +20,6 @@ const OverLay = (props) => {
   const userId = localStorage.getItem("userId");
 
   const updateMedicines = async () => {
-    // console.log("User ID:", userIdRef.current.value);
-    // console.log("Medicine ID:", medicineId);
-    // console.log("Request Body:", {
-    //   medicine_name: medicineNameRef.current.value,
-    //   medicine_expiry: medicineExpiryRef.current.value,
-    //   quantity: quantityRef.current.value,
-    //   daily_dosage: dosageRef.current.value,
-    //   start_date: startDateRef.current.value,
-    //   end_date: endDateRef.current.value,
-    //   user_id: userRole === "1" ? userIdRef.current.value : userId,
-    // });
     const res = await fetch(
       import.meta.env.VITE_SERVER + "/MATS/meds/" + medicineId,
       {
@@ -47,7 +35,10 @@ const OverLay = (props) => {
           daily_dosage: dosageRef.current.value,
           start_date: startDateRef.current.value,
           end_date: endDateRef.current.value,
-          user_id: userRole === "1" ? userIdRef.current.value : userId,
+          user_id:
+            userRole === "1"
+              ? props.medicine.medicines_users?.[0]?.user_id
+              : userId,
         }),
       }
     );
@@ -123,17 +114,10 @@ const OverLay = (props) => {
 
         {userRole === "1" && (
           <div>
-            <label>Assign User ID</label>
-            <input
-              type="text"
-              ref={userIdRef}
-              defaultValue={props.medicine.medicines_users?.[0]?.user_id}
-              className="border border-lightGray p-2 rounded w-full"
-            />
+            <label>Assign User ID: </label>
+            <span>{props.medicine.medicines_users?.[0]?.user_id}</span>
           </div>
         )}
-
-        {/* {console.log(props.medicine.medicines_users?.[0]?.user_id)} */}
 
         <div className="modal-footer">
           <button

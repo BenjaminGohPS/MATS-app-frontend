@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo_transparent.png";
 import LogoutModal from "./LogoutModal";
+import { toast } from "react-toastify";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,6 +10,7 @@ const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("accessToken");
+  const userRole = localStorage.getItem("userRole");
 
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
@@ -23,9 +25,8 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userId");
+    localStorage.clear();
+    toast.success("Logged out successfully!");
     navigate("/");
     setIsLogoutModalOpen(false);
   };
@@ -41,7 +42,6 @@ const NavBar = () => {
   }, []);
 
   return (
-   
     <nav
       className={`${
         scrolled ? "bg-blue-900 text-white" : "bg-blue-600 text-white"
@@ -94,16 +94,19 @@ const NavBar = () => {
             >
               Medicines
             </NavLink>
-            <NavLink
-              to="/profile"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-white bg-blue-500 py-2 px-4 rounded transition-all"
-                  : "text-white hover:bg-blue-700 py-2 px-4 rounded transition-all"
-              }
-            >
-              Profile
-            </NavLink>
+
+            {userRole === "1" && (
+              <NavLink
+                to="/Users"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-white bg-blue-500 py-2 px-4 rounded transition-all"
+                    : "text-white hover:bg-blue-700 py-2 px-4 rounded transition-all"
+                }
+              >
+                Users
+              </NavLink>
+            )}
 
             <button
               onClick={openLogoutModal}
