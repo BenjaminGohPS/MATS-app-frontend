@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AppointmentCard from "../components/AppointmentCard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const accessToken = localStorage.getItem("accessToken");
   const userRole = localStorage.getItem("userRole");
   const userId = localStorage.getItem("userId"); // Assuming user ID is stored in localStorage
@@ -51,6 +52,31 @@ const Dashboard = () => {
     queryFn: getAppointments,
   });
 
+  // delete appointment
+  const deleteAppointment = async (appointmentId) => {
+    const res = await fetch(import.meta.env.VITE_SERVER + "/MATS/appts", {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+        authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify({
+        id: appointmentId,
+        // user_id: userRole === "1" ? userIdRef.current.value : undefined,
+        // no need, because I can see all appointments as admin
+        // same as medicine, need to have extra field here to delete for user.
+        // user_id: userId,
+      }),
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      toast.error(error.msg || "Failed to delete appointment");
+    } else {
+      queryClient.invalidateQueries(["appointments"]);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
@@ -85,12 +111,11 @@ const Dashboard = () => {
         ) : (
           <div>
             {queryAppointments.data.map((appointment) => {
-           
               return (
                 <AppointmentCard
                   key={appointment.appointment_id}
                   appointment={appointment}
-                  onDelete={() => {}}
+                  onDelete={() => deleteAppointment(appointment.appointment_id)}
                 />
               );
             })}
@@ -104,10 +129,7 @@ const Dashboard = () => {
           <h3 className="text-lg font-semibold text-darkGray">
             Admin Controls
           </h3>
-          <button
-            className="btn-edit"
-            onClick={() => navigate("/appointments")}
-          >
+          <button className="btn-edit" onClick={() => navigate("/appts")}>
             Manage All Appointments
           </button>
         </div>

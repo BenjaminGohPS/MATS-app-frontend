@@ -49,7 +49,9 @@ const AppointmentCard = ({ appointment, onDelete }) => {
       </div>
       {showDeleteConfirm && (
         <div className="mt-2">
-          <p className="text-darkGray">Delete this appointment?</p>
+          <p className="text-darkGray bg-softLavender">
+            Delete this appointment?
+          </p>
           <div className="flex justify-between">
             <button onClick={handleDelete} className="btn-confirm">
               Yes

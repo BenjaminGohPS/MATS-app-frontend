@@ -12,12 +12,26 @@ const OverLay = (props) => {
   const dosageRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
+  const userIdRef = useRef();
   const medicineId = props.medicine.medicine_id;
   const startDate = props.medicine.medicines_users[0].start_date;
   const endDate = props.medicine.medicines_users[0].end_date;
   const accessToken = localStorage.getItem("accessToken");
+  const userRole = localStorage.getItem("userRole");
+  const userId = localStorage.getItem("userId");
 
   const updateMedicines = async () => {
+    // console.log("User ID:", userIdRef.current.value);
+    // console.log("Medicine ID:", medicineId);
+    // console.log("Request Body:", {
+    //   medicine_name: medicineNameRef.current.value,
+    //   medicine_expiry: medicineExpiryRef.current.value,
+    //   quantity: quantityRef.current.value,
+    //   daily_dosage: dosageRef.current.value,
+    //   start_date: startDateRef.current.value,
+    //   end_date: endDateRef.current.value,
+    //   user_id: userRole === "1" ? userIdRef.current.value : userId,
+    // });
     const res = await fetch(
       import.meta.env.VITE_SERVER + "/MATS/meds/" + medicineId,
       {
@@ -33,23 +47,28 @@ const OverLay = (props) => {
           daily_dosage: dosageRef.current.value,
           start_date: startDateRef.current.value,
           end_date: endDateRef.current.value,
+          user_id: userRole === "1" ? userIdRef.current.value : userId,
         }),
       }
     );
     if (!res.ok) {
-      throw new Error("error updating medicine");
+      const error = await res.json();
+      throw new Error(error.message || "error updating medicine");
     }
+
+    const data = await res.json();
+    return data;
   };
 
   const { mutate } = useMutation({
     mutationFn: updateMedicines,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(["medicines"]);
-      toast.success("Medicine updated successfully!");
+      toast.success(data.msg || "Medicine updated successfully!");
       props.onClose();
     },
-    onError: () => {
-      toast.error("Error updating medicine.");
+    onError: (error) => {
+      toast.error(error.msg || "Error updating medicine.");
     },
   });
 
@@ -101,6 +120,20 @@ const OverLay = (props) => {
           defaultValue={endDate}
           className="input-field"
         />
+
+        {userRole === "1" && (
+          <div>
+            <label>Assign User ID</label>
+            <input
+              type="text"
+              ref={userIdRef}
+              defaultValue={props.medicine.medicines_users?.[0]?.user_id}
+              className="border border-lightGray p-2 rounded w-full"
+            />
+          </div>
+        )}
+
+        {/* {console.log(props.medicine.medicines_users?.[0]?.user_id)} */}
 
         <div className="modal-footer">
           <button

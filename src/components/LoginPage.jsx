@@ -66,7 +66,7 @@ const LoginPage = () => {
       const userRole = decodedToken.role_id;
       localStorage.setItem("userRole", userRole);
 
-      const userId = decodedToken.id;
+      const userId = decodedToken.userId;
       localStorage.setItem("userId", userId);
 
       console.log("role id:", userRole);
@@ -74,7 +74,7 @@ const LoginPage = () => {
       navigate(redirectTo, { replace: true });
     },
     onError: (error) => {
-      toast.error(error.msg || "Failed to log in. Try again later.");
+      toast.error("Failed to log in. Try again later." || error.message);
     },
   });
 

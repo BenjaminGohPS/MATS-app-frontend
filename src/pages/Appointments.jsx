@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AppointmentCard from "../components/AppointmentCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // const Appointments = ({userRole, accessToken})
 const Appointments = () => {
@@ -17,11 +19,9 @@ const Appointments = () => {
 
   const accessToken = localStorage.getItem("accessToken");
   const userRole = localStorage.getItem("userRole");
-  const userId = localStorage.getItem("userId"); // not working yet
+  const userId = localStorage.getItem("userId");
 
-  // checking roles
-//   console.log(userRole);
-//   console.log(userId);
+  //   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     if (!accessToken) {
@@ -45,6 +45,9 @@ const Appointments = () => {
 
     const data = await res.json();
     return data;
+    // return data.sort(
+    //   (a, b) => new Date(a.appointment_date) - new Date(b.appointment_date)
+    // );
   };
 
   const queryAppointments = useQuery({
@@ -73,6 +76,9 @@ const Appointments = () => {
       },
       body: JSON.stringify({
         appointment_date: appointmentDateRef.current.value,
+        // appointment_date: selectedDate
+        //   ? selectedDate.toISOString().split("T")[0]
+        //   : "", // format the date to yyyy-mm-dd
         appointment_time: appointmentTimeRef.current.value,
         location: locationRef.current.value,
         type: typeRef.current.value,
@@ -108,6 +114,7 @@ const Appointments = () => {
       if (typeRef.current) typeRef.current.value = "";
       if (doctorRef.current) doctorRef.current.value = "";
       if (userIdRef.current) userIdRef.current.value = "";
+      //   setSelectedDate(null);
     },
     onError: (error) => {
       toast.error(
@@ -161,24 +168,37 @@ const Appointments = () => {
             placeholder="Appointment Date"
             className="border border-lightGray p-2 rounded w-full"
           />
+          {/* <label>Appointment Date: </label> */}
+          {/* <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="dd-MMM-yyyy"
+            className="border border-lightGray p-2 rounded w-full"
+            placeholderText="Select Appointment Date"
+          /> */}
+
+          {/* <label>Appointment Time: </label> */}
           <input
             type="text"
             ref={appointmentTimeRef}
             placeholder="Appointment Time"
             className="border border-lightGray p-2 rounded w-full"
           />
+          {/* <label>Location: </label> */}
           <input
             type="text"
             ref={locationRef}
             placeholder="Location"
             className="border border-lightGray p-2 rounded w-full"
           />
+          {/* <label>Type: </label> */}
           <input
             type="text"
             ref={typeRef}
             placeholder="Type"
             className="border border-lightGray p-2 rounded w-full"
           />
+          {/* <label>Doctor: </label> */}
           <input
             type="text"
             ref={doctorRef}
