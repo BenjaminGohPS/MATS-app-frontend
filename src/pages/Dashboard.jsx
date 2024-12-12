@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -85,8 +85,28 @@ const Dashboard = () => {
 
   if (queryAppointments.isLoading) {
     return (
-      <div className="spinner-container">
-        <div className="spinner">Loading...</div>
+      <div className="flex justify-center items-center h-screen">
+        <svg
+          className="animate-spin h-10 w-10 text-blue-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V4a10 10 0 00-10 10h2z"
+          />
+        </svg>
       </div>
     );
   }
@@ -104,14 +124,14 @@ const Dashboard = () => {
       {/* Display user details */}
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-darkGray">
-          Welcome back, {userEmail.split("@")[0]}!
+          Welcome back, {userEmail ? userEmail.split("@")[0] : "Guest"}!
         </h3>
         <p className="text-darkGray">
           Role: {userRole === "1" ? "Admin" : "User"}
           <br />
-          Email: {userEmail}
+          Email: {userEmail || "No email available"}
           <br />
-          User ID: {userId}
+          User ID: {userId || "No ID available"}
         </p>
       </div>
 

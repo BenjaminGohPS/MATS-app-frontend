@@ -3,10 +3,7 @@ import AppointmentCard from "../components/AppointmentCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
-// const Appointments = ({userRole, accessToken})
 const Appointments = () => {
   const queryClient = useQueryClient();
   const appointmentDateRef = useRef();
@@ -16,12 +13,11 @@ const Appointments = () => {
   const doctorRef = useRef();
   const userIdRef = useRef();
   const navigate = useNavigate();
+  const [searchId, setSearchId] = useState("");
 
   const accessToken = localStorage.getItem("accessToken");
   const userRole = localStorage.getItem("userRole");
   const userId = localStorage.getItem("userId");
-
-  //   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     if (!accessToken) {
@@ -31,7 +27,34 @@ const Appointments = () => {
   }, [accessToken, navigate]);
 
   const getAppointments = async () => {
-    const res = await fetch(import.meta.env.VITE_SERVER + "/MATS/appts", {
+    const userIdFromQuery = userRole === "1" ? searchId : userId;
+
+    const res = await fetch(
+      `${import.meta.env.VITE_SERVER}/MATS/appts?user_id=${userIdFromQuery}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          authorization: "Bearer " + accessToken,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("error getting appointment data");
+    }
+
+    const data = await res.json();
+    return data;
+  };
+
+  const queryAppointments = useQuery({
+    queryKey: ["appointments", searchId],
+    queryFn: getAppointments,
+  });
+
+  const getUsers = async () => {
+    const res = await fetch(import.meta.env.VITE_SERVER + "/MATS/users", {
       method: "GET",
       headers: {
         "Content-type": "application/json",
@@ -40,19 +63,17 @@ const Appointments = () => {
     });
 
     if (!res.ok) {
-      throw new Error("error getting appointment data");
+      throw new Error("error getting user data");
     }
 
     const data = await res.json();
     return data;
-    // return data.sort(
-    //   (a, b) => new Date(a.appointment_date) - new Date(b.appointment_date)
-    // );
   };
 
-  const queryAppointments = useQuery({
-    queryKey: ["appointments"],
-    queryFn: getAppointments,
+  const queryUsers = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+    enabled: userRole === "1",
   });
 
   // add appointment
@@ -76,9 +97,6 @@ const Appointments = () => {
       },
       body: JSON.stringify({
         appointment_date: appointmentDateRef.current.value,
-        // appointment_date: selectedDate
-        //   ? selectedDate.toISOString().split("T")[0]
-        //   : "", // format the date to yyyy-mm-dd
         appointment_time: appointmentTimeRef.current.value,
         location: locationRef.current.value,
         type: typeRef.current.value,
@@ -101,12 +119,6 @@ const Appointments = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries(["appointments"]);
       toast.success(data.msg || "Appointment added successfully");
-      //   appointmentDateRef.current.value = "";
-      //   appointmentTimeRef.current.value = "";
-      //   locationRef.current.value = "";
-      //   typeRef.current.value = "";
-      //   doctorRef.current.value = "";
-      //   userIdRef.current.value = "";
 
       if (appointmentDateRef.current) appointmentDateRef.current.value = "";
       if (appointmentTimeRef.current) appointmentTimeRef.current.value = "";
@@ -114,7 +126,6 @@ const Appointments = () => {
       if (typeRef.current) typeRef.current.value = "";
       if (doctorRef.current) doctorRef.current.value = "";
       if (userIdRef.current) userIdRef.current.value = "";
-      //   setSelectedDate(null);
     },
     onError: (error) => {
       toast.error(
@@ -134,10 +145,6 @@ const Appointments = () => {
       },
       body: JSON.stringify({
         id: appointmentId,
-        // user_id: userRole === "1" ? userIdRef.current.value : undefined,
-        // no need, because I can see all appointments as admin
-        // same as medicine, need to have extra field here to delete for user.
-        // user_id: userId,
       }),
     });
 
@@ -149,9 +156,38 @@ const Appointments = () => {
     }
   };
 
+  if (queryAppointments.isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <svg
+          className="animate-spin h-10 w-10 text-blue-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V4a10 10 0 00-10 10h2z"
+          />
+        </svg>
+      </div>
+    );
+  }
+  if (queryAppointments.isError)
+    return <div>Error: {queryAppointments.error.message}</div>;
+
   const sortAppointmentsByDate = (appointments) => {
     return appointments.sort((a, b) => {
-      // Handle missing or incorrect date formats gracefully
       const parseDate = (dateStr) => {
         const dateParts = dateStr.split("-");
         if (dateParts.length === 3) {
@@ -169,16 +205,6 @@ const Appointments = () => {
     ? sortAppointmentsByDate(queryAppointments.data)
     : [];
 
-  if (queryAppointments.isLoading) {
-    return (
-      <div className="spinner-container">
-        <div className="spinner">Loading...</div>
-      </div>
-    );
-  }
-  if (queryAppointments.isError)
-    return <div>Error: {queryAppointments.error.message}</div>;
-
   return (
     <div className="p-4 bg-softWhite">
       <h2 className="text-2xl font-bold text-darkGray mb-4">Appointments</h2>
@@ -194,37 +220,28 @@ const Appointments = () => {
             placeholder="Appointment Date"
             className="border border-lightGray p-2 rounded w-full"
           />
-          {/* <label>Appointment Date: </label> */}
-          {/* <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="dd-MMM-yyyy"
-            className="border border-lightGray p-2 rounded w-full"
-            placeholderText="Select Appointment Date"
-          /> */}
 
-          {/* <label>Appointment Time: </label> */}
           <input
             type="text"
             ref={appointmentTimeRef}
             placeholder="Appointment Time"
             className="border border-lightGray p-2 rounded w-full"
           />
-          {/* <label>Location: </label> */}
+
           <input
             type="text"
             ref={locationRef}
             placeholder="Location"
             className="border border-lightGray p-2 rounded w-full"
           />
-          {/* <label>Type: </label> */}
+
           <input
             type="text"
             ref={typeRef}
             placeholder="Type"
             className="border border-lightGray p-2 rounded w-full"
           />
-          {/* <label>Doctor: </label> */}
+
           <input
             type="text"
             ref={doctorRef}
@@ -259,19 +276,38 @@ const Appointments = () => {
         <h3 className="text-lg font-semibold text-darkGray mb-2">
           Your Appointments
         </h3>
-        {queryAppointments.isSuccess && queryAppointments.data.length === 0 ? (
-          <p>No appointment found.</p>
+
+        {userRole === "1" &&
+        queryUsers.isSuccess &&
+        queryUsers.data.length > 0 ? (
+          <select
+            value={searchId}
+            onChange={(event) => {
+              setSearchId(event.target.value);
+              queryClient.invalidateQueries("appointments");
+            }}
+            className="border border-lightGray p-2 rounded w-full"
+          >
+            <option value="">All Appointments</option>
+            {queryUsers.data.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.id} // {user.email}
+              </option>
+            ))}
+          </select>
+        ) : null}
+
+        {sortedAppointments.length === 0 ? (
+          <p>No appointments found.</p>
         ) : (
           <div>
-            {sortedAppointments.map((appointment) => {
-              return (
-                <AppointmentCard
-                  key={appointment.appointment_id}
-                  appointment={appointment}
-                  onDelete={() => deleteAppointment(appointment.appointment_id)} // Pass the delete function as a prop
-                />
-              );
-            })}
+            {sortedAppointments.map((appointment) => (
+              <AppointmentCard
+                key={appointment.appointment_id}
+                appointment={appointment}
+                onDelete={() => deleteAppointment(appointment.appointment_id)} // Pass the delete function as a prop
+              />
+            ))}
           </div>
         )}
       </div>

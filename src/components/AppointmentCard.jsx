@@ -76,20 +76,3 @@ const AppointmentCard = ({ appointment, onDelete }) => {
 };
 
 export default AppointmentCard;
-
-/* WORKINGS
-
-
-<button
-    onClick={() => onEdit(appointment.id)}
-    className="text-softBlue hover:text-[#4D8BD9] transition"
->
-    <FaEdit /> Edit
-</button>
-<button
-    onClick={() => setShowDeleteConfirm(true)}
-    className="text-warmAmber hover:text-[#D88B1F] transition"
->
-    <FaTrash /> Delete
-</button>
-*/

@@ -12,7 +12,7 @@ const Medicines = () => {
   const dosageRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
-  const userIdRef = useRef()
+  const userIdRef = useRef();
   const navigate = useNavigate();
 
   const accessToken = localStorage.getItem("accessToken");
@@ -142,9 +142,6 @@ const Medicines = () => {
       },
       body: JSON.stringify({
         medicine_id: medicineId,
-        // user_id: userRole === "1" ? userIdRef.current.value : undefined,
-        // i have to include a way for admin to delete. but admin must have additional field to input the user_id. work on it tmr
-        // user_id: userId,
       }),
     });
 
@@ -152,8 +149,6 @@ const Medicines = () => {
       const error = await res.json();
       toast.error(error.message || "Failed to delete medicine");
     } else {
-      //   const data = await res.json();
-      //   toast.success(data.msg || "Medicine deleted successfully");
       queryClient.invalidateQueries(["medicines"]);
     }
   };
@@ -259,12 +254,3 @@ const Medicines = () => {
   );
 };
 export default Medicines;
-
-/* WORKINGS
-
- {JSON.stringify(queryMedicine.data)}
- 
-
-
- 
-*/

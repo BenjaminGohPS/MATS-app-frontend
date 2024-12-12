@@ -47,8 +47,6 @@ const LoginPage = () => {
   const mutationLogin = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log("Login data:", data);
-
       localStorage.setItem("accessToken", data.access);
       toast.success(data.msg || "Login successful");
 
@@ -66,7 +64,6 @@ const LoginPage = () => {
       navigate(redirectTo, { replace: true });
     },
     onError: (error) => {
-      console.log("Login Error:", error);
       toast.error(error.msg || "Login failed. Please try again.");
     },
   });
