@@ -107,6 +107,10 @@
   border-color: #4d8bd9;
 }
 
+a {
+  pointer-events: auto;
+}
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;

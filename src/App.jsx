@@ -19,10 +19,6 @@ const queryClient = new QueryClient();
 const App = () => {
   const accessToken = localStorage.getItem("accessToken");
 
-  // if (!accessToken) {
-  //   return <Navigate to="/login" replace />;
-  // }
-
   return (
     <div>
       <QueryClientProvider client={queryClient}>
@@ -55,12 +51,3 @@ const App = () => {
 };
 
 export default App;
-
-/* WORKINGS
- <div>
-          <div className="bg-blue-500 p-4">
-            This is a blue div with padding.
-          </div>
-          <TestTailwind />
-        </div> 
-*/

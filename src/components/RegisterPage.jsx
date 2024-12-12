@@ -90,7 +90,6 @@ const RegisterPage = () => {
           className="border border-lightGray p-2 rounded w-full"
         />
         {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
-        {/* {console.log(JSON.stringify{passwordRef})} */}
         <input
           ref={passwordRef}
           type="password"

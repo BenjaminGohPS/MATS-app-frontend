@@ -45,7 +45,7 @@ const LandingPage = () => {
         </button>
       </div>
 
-      <footer className="text-sm text-softWhite mt-auto">
+      <footer className="text-sm text-softWhite mt-auto z-50">
         <p>&copy; 2024 MATS Application. All rights reserved.</p>
         <p>
           Created by{" "}
@@ -54,7 +54,7 @@ const LandingPage = () => {
           </a>
           . Connect with me on{" "}
           <a
-            href="www.linkedin.com/in/benjamin-goh-ps"
+            href="https://www.linkedin.com/in/benjamin-goh-ps"
             className="text-darkGray"
             target="_blank"
             rel="noopener noreferrer"

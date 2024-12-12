@@ -66,7 +66,8 @@ const LoginPage = () => {
       navigate(redirectTo, { replace: true });
     },
     onError: (error) => {
-      toast.error(error.msg);
+      console.log("Login Error:", error);
+      toast.error(error.msg || "Login failed. Please try again.");
     },
   });
 
