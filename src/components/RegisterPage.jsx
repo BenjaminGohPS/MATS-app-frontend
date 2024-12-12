@@ -45,7 +45,7 @@ const RegisterPage = () => {
       passwordRef.current.value = "";
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to register. Try again later.");
+      toast.error(error.msg);
     },
   });
 
@@ -76,6 +76,15 @@ const RegisterPage = () => {
         >
           {mutationRegister.isLoading ? "Registering..." : "Register"}
         </button>
+
+        <div className="p-4 bg-softWhite">
+          <ul className="text-sm text-darkGray mb-4">
+            Password must meet the following requirements:
+            <li>At least 10 characters</li>
+            <li>At least one uppercase letter</li>
+            <li>At least one symbol</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

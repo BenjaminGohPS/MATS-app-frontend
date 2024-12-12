@@ -123,7 +123,7 @@ const Dashboard = () => {
       {/* Display upcoming appointments */}
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-darkGray">
-          Your Upcoming Appointments
+          List of Upcoming Appointments
         </h3>
         {queryAppointments.isSuccess && queryAppointments.data.length === 0 ? (
           <p>No upcoming appointments.</p>

@@ -78,7 +78,7 @@ const LoginPage = () => {
       navigate(redirectTo, { replace: true });
     },
     onError: (error) => {
-      toast.error("Failed to log in. Try again later." || error.message);
+      toast.error(error.msg);
     },
   });
 

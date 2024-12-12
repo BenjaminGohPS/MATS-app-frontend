@@ -97,7 +97,7 @@ const NavBar = () => {
 
             {userRole === "1" && (
               <NavLink
-                to="/Users"
+                to="/users"
                 className={({ isActive }) =>
                   isActive
                     ? "text-white bg-blue-500 py-2 px-4 rounded transition-all"
@@ -118,9 +118,14 @@ const NavBar = () => {
         )}
 
         {/* Hamburger Menu Button */}
-        <button className="lg:hidden text-white text-2xl" onClick={toggleMenu}>
-          ☰
-        </button>
+        {accessToken && (
+          <button
+            className="lg:hidden text-white text-2xl"
+            onClick={toggleMenu}
+          >
+            ☰
+          </button>
+        )}
       </div>
 
       <LogoutModal
