@@ -1,9 +1,5 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import TestTailwind from "./components/TestTailwind";
 import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./components/RegisterPage";
@@ -36,7 +32,12 @@ const App = () => {
           <NavBar />
           <Routes>
             {/* at start */}
-            <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/"
+              element={
+                accessToken ? <Navigate to="/dashboard" /> : <LandingPage />
+              }
+            />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="*" element={<NotFound />} />

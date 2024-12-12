@@ -53,10 +53,6 @@ const Dashboard = () => {
       },
       body: JSON.stringify({
         id: appointmentId,
-        // user_id: userRole === "1" ? userIdRef.current.value : undefined,
-        // no need, because I can see all appointments as admin
-        // same as medicine, need to have extra field here to delete for user.
-        // user_id: userId,
       }),
     });
 
@@ -70,7 +66,6 @@ const Dashboard = () => {
 
   const sortAppointmentsByDate = (appointments) => {
     return appointments.sort((a, b) => {
-      // Handle missing or incorrect date formats gracefully
       const parseDate = (dateStr) => {
         const dateParts = dateStr.split("-");
         if (dateParts.length === 3) {
@@ -120,6 +115,24 @@ const Dashboard = () => {
         </p>
       </div>
 
+      {/* Admin-specific features */}
+      {userRole === "1" && (
+        <div className="mb-4 space-x-4">
+          <h3 className="text-lg font-semibold text-darkGray">
+            Admin Controls
+          </h3>
+          <button className="btn-edit " onClick={() => navigate("/appts")}>
+            Manage All Appointments
+          </button>
+          <button className="btn-edit" onClick={() => navigate("/meds")}>
+            Manage All Medicines
+          </button>
+          <button className="btn-edit" onClick={() => navigate("/users")}>
+            Manage All Users
+          </button>
+        </div>
+      )}
+
       {/* Display upcoming appointments */}
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-darkGray">
@@ -141,31 +154,6 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-
-      {/* Admin-specific features */}
-      {userRole === "1" && (
-        <div className="mb-4 space-x-4">
-          <h3 className="text-lg font-semibold text-darkGray">
-            Admin Controls
-          </h3>
-          <button className="btn-edit " onClick={() => navigate("/appts")}>
-            Manage All Appointments
-          </button>
-          <button className="btn-edit" onClick={() => navigate("/meds")}>
-            Manage All Medicines
-          </button>
-          <button className="btn-edit" onClick={() => navigate("/users")}>
-            Manage All Users
-          </button>
-        </div>
-      )}
-
-      {/* Logout Button */}
-      {/* <div className="mt-4">
-        <button onClick={handleLogout} className="btn-cancel">
-          Logout
-        </button>
-      </div> */}
     </div>
   );
 };

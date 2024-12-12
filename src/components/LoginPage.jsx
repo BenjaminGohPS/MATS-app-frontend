@@ -41,17 +41,8 @@ const LoginPage = () => {
     }
 
     const data = await res.json();
-    console.log("API response:", data);
     return data;
   };
-
-  /* For reference on what is stored backend
-      const claims = {
-      userId: auth.id,
-      email: auth.email,
-      role_id: auth.role_id,
-    }; 
-  */
 
   const mutationLogin = useMutation({
     mutationFn: login,
@@ -72,9 +63,6 @@ const LoginPage = () => {
       const userEmail = decodedToken.email;
       localStorage.setItem("userEmail", userEmail);
 
-      console.log("role id:", userRole);
-      console.log("user id:", userId);
-      console.log("userEmail:", userEmail);
       navigate(redirectTo, { replace: true });
     },
     onError: (error) => {
@@ -107,7 +95,7 @@ const LoginPage = () => {
           }}
           className="btn-edit"
         >
-          {mutationLogin.isLoading ? "Logging in..." : "Login"}
+          {mutationLogin.isLoading ? "Loading..." : "Login"}
         </button>
       </div>
     </div>
