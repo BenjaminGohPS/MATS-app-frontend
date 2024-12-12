@@ -1,15 +1,22 @@
 import { useMutation } from "@tanstack/react-query";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{10,}$/; // Check for at least 10 characters, one uppercase letter, one number, and one symbol
+
+  const [emailError, setEmailError] = useState();
+  const [passwordError, setPasswordError] = useState();
 
   const register = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
+
+    setEmailError("");
+    setPasswordError("");
 
     if (!email || !password) {
       toast.error("Please fill in all fields.");
@@ -17,8 +24,19 @@ const RegisterPage = () => {
     }
 
     if (!emailRegex.test(email)) {
-      toast.error("Please enter a valid email address.");
+      setEmailError("Please enter a valid email address.");
       return;
+    } else {
+      setEmailError("");
+    }
+
+    if (!passwordRegex.test(password)) {
+      setPasswordError(
+        "Password must be at least 10 characters, contains one uppercase letter, one number, and one symbol."
+      );
+      return;
+    } else {
+      setPasswordError("");
     }
 
     const res = await fetch(import.meta.env.VITE_SERVER + "/MATS/register", {
@@ -29,11 +47,22 @@ const RegisterPage = () => {
       body: JSON.stringify({ email, password }),
     });
 
+    const data = await res.json();
+
     if (!res.ok) {
-      throw new Error("Error during registration");
+      // duplicate email
+      if (data.status === "error" && data.msg === "duplicate email") {
+        setEmailError(
+          "This email is already registered. If this is you, please proceed to log in. Otherwise use another email to register."
+        );
+      } else {
+        toast.error(data.msg || "Error during registration");
+      }
+      return;
     }
 
-    const data = await res.json();
+    setEmailError("");
+    setPasswordError("");
     return data;
   };
 
@@ -60,13 +89,17 @@ const RegisterPage = () => {
           placeholder="Email"
           className="border border-lightGray p-2 rounded w-full"
         />
-
+        {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
+        {/* {console.log(JSON.stringify{passwordRef})} */}
         <input
           ref={passwordRef}
           type="password"
           placeholder="Password"
           className="border border-lightGray p-2 rounded w-full"
         />
+        {passwordError && (
+          <p className="text-red-500 text-sm">{passwordError}</p>
+        )}
 
         <button
           onClick={() => {
@@ -82,6 +115,7 @@ const RegisterPage = () => {
             Password must meet the following requirements:
             <li>At least 10 characters</li>
             <li>At least one uppercase letter</li>
+            <li>At least one number</li>
             <li>At least one symbol</li>
           </ul>
         </div>

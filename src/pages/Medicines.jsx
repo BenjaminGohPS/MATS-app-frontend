@@ -12,7 +12,7 @@ const Medicines = () => {
   const dosageRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
-  const userIdRef = useRef();
+  const userIdRef = useRef()
   const navigate = useNavigate();
 
   const accessToken = localStorage.getItem("accessToken");
