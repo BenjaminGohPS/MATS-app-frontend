@@ -85,6 +85,8 @@ All planning materials and project management details can be found here:
 
 - Navigate to the **Sign Up** page from the navbar.
 - Fill in the required details (i.e. email, password) and click **Sign Up**.
+- NOTE: anyone who signs up is default as USERS. For the first ADMIN role, you would have to manually amend the `role_id` from the `roles` table
+- subsequent roles amendment can be done at the `User` tab. refer to section `6` below for steps
 
 ![Sign Up Page](/src/assets/MATS_app_ss2.jpg)
 
@@ -103,7 +105,13 @@ All planning materials and project management details can be found here:
 - After logging in, you will be redirected to your **Dashboard**.
 - Here, you can manage your medication and appointments.
 
+`USER`
 ![Dashboard](/src/assets/MATS_app_ss4.jpg)
+
+- For ADMIN, there will be additional buttons
+
+`ADMIN`
+![Dashboard Admin](/src/assets/MATS_app_ss6.jpg)
 
 ### 4. Adding Appointments
 
@@ -112,12 +120,17 @@ All planning materials and project management details can be found here:
 - You may also edit the details, or delete appointments here
 - From the navigation bar at the top, click Appointments, and you are greeted with the input field to add appointments.
 - fill in the appointment date, appointment time, location, type, and doctor. Once done, click **Add Appointment** to add to your list.
+- Here you can view your own appointments
+
+`USERS`
 ![Add Appointment Page](/src/assets/MATS_app_ss5.jpg)
 
 - For ADMIN, there will be an additonal field for you to assign to an individual.
 - ADMIN will also have a drop down menu to filter the appointments by individual users
+- ADMIN can see all appointments
 
-![Admin Filter Appointment Page](/src/assets/MATS_app_ss5.jpg)
+`ADMIN`
+![Admin Appointment Page](/src/assets/MATS_app_ss8.jpg)
 
 ### 5. Adding Medication
 
@@ -125,15 +138,23 @@ All planning materials and project management details can be found here:
 - Click **Add Medication** to enter details such as the medicine name, dosage, and expiry date.
 - You can also input the quantity to track how many pills are left.
 
-![Add Medication Page](path/to/your/add-medication-image.png)
+`USERS`
+![Add Medication Page](/src/assets/MATS_app_ss10.jpg)
 
-### 6. Viewing and Managing Medications & Appointments
+- For ADMIN, there will be an additonal field for you to assign to an individual.
+- ADMIN can see all medicines and their users
 
-- After adding medication and appointments, you can view them directly on your **Dashboard**.
-- Medication cards will show key details such as how many pills are left, the expiry date, and a visual cue if the medication is running low (less than 30 days).
-- Appointment cards display information such as the date, time, and location.
+`ADMIN`
+![Admin Medication Page](/src/assets/MATS_app_ss7.jpg)
 
-![Medications and Appointments Overview](path/to/your/overview-image.png)
+### 6. Users
+
+- This is a user management page only available for ADMINS **Users**.
+- ADMIN will be able to see all users, and amend their roles
+- ADMIN cannot amend their own role. ADMIN who is logged in, will be highlighted in green, and their roles button disabled.
+
+`ADMIN ONLY`
+![User page](/src/assets/MATS_app_ss9.jpg)
 
 ---
 
