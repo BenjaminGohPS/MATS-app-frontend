@@ -4,7 +4,7 @@
 
 MATS is a personal medicine and appointment tracker designed to help users manage their healthcare routines. With Singapore's aging population in mind, MATS allows users to easily track their medications, upcoming medical appointments, and ensure they never miss a dose or an appointment. The app enables users to record down their upcoming doctor visit, with info such as the date, time, location, and type. The app also allows users to log medications, track their quantities and expiration dates.
 
-Although stil in its beta stage, I believe this app holds great potential and usefulness for individuals and healthcare organisation.
+Although still in its beta stage, I believe this app holds great potential and usefulness for individuals and healthcare organisation.
 
 ---
 
